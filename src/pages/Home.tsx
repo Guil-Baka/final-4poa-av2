@@ -9,6 +9,10 @@ import LoginForm from "../components/ui/LoginForm";
 import HeaderNavBar from "../components/ui/HeaderNavBar";
 import LogoHeader from "../assets/imgs/logoTransparentBackgroundMini.svg";
 
+
+
+
+
 function Home() {
   return (
     <>

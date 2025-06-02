@@ -21,7 +21,9 @@ export default function HeaderNavBar() {
             <NavigationMenuLink onClick={() => console.log("Home")}>
               <Link to="/Home">Home</Link>
             </NavigationMenuLink>
-            <NavigationMenuLink onClick={() => console.log("Listagem")}>Listagem</NavigationMenuLink>
+            <NavigationMenuLink onClick={() => console.log("Listagem")}>
+              <Link to="/Listagem">Listagem</Link>
+            </NavigationMenuLink>
             <NavigationMenuLink className="w-32">
               Meus Anuncios
             </NavigationMenuLink>
