@@ -2,6 +2,7 @@ import LoginForm from "../components/ui/LoginForm";
 import HeaderNavBar from "../components/ui/HeaderNavBar";
 import LogoHeader from "../assets/imgs/logoTransparentBackgroundMini.svg";
 import ListItem from "../components/ui/ListItem";
+import CadastrarProdutoForm from "../components/ui/CadastrarProdutoForm";
 
 function Listagem() {
   return (
@@ -18,7 +19,7 @@ function Listagem() {
             <HeaderNavBar />
           </div>
           <div>
-            <LoginForm />
+            <CadastrarProdutoForm />
           </div>
         </div>
         <div

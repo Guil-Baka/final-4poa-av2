@@ -5,11 +5,10 @@
 // import LoginForm from "./components/ui/LoginForm";
 // import { createPortal } from "react-dom";
 // import PortalModal from "./components/PortalModal";
-import LoginForm from "../components/ui/LoginForm";
+// import LoginForm from "../components/ui/LoginForm";
 import HeaderNavBar from "../components/ui/HeaderNavBar";
 import LogoHeader from "../assets/imgs/logoTransparentBackgroundMini.svg";
-
-
+import CadastrarProdutoForm from "../components/ui/CadastrarProdutoForm";
 
 
 
@@ -30,7 +29,7 @@ function Home() {
             <HeaderNavBar />
           </div>
           <div>
-            <LoginForm />
+            <CadastrarProdutoForm/>
           </div>
         </div>
         <div
