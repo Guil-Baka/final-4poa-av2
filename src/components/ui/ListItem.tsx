@@ -1,14 +1,49 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FileQuestion } from "lucide-react";
+import { Badge } from "../../components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../components/ui/tooltip";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../components/ui/carousel";
 
 interface ListItemProps {
   id: string;
   name: string;
   price: string;
-  condition: string;
-  img: string;
+  condition: "Funcionando" | "Funcionando Parcialmente" | "Quebrado";
+  img: string | string[];
+  description: string;
+  phone: string;
 }
+
+const conditionStyles: Record<
+  ListItemProps["condition"],
+  { bg: string; tooltip: string }
+> = {
+  Funcionando: {
+    bg: "bg-lime-500",
+    tooltip:
+      "De acordo com o vendedor o item está em perfeito estado de funcionamento.",
+  },
+  "Funcionando Parcialmente": {
+    bg: "bg-amber-500",
+    tooltip:
+      "De acordo com o vendedor o item funciona, mas possui algum problema ou limitação.",
+  },
+  Quebrado: {
+    bg: "bg-red-500",
+    tooltip:
+      "De acordo com o vendedor o item está quebrado e pode não funcionar como esperado.",
+  },
+};
 
 export default function ListItem({
   id,
@@ -16,38 +51,73 @@ export default function ListItem({
   price,
   condition,
   img,
+  description,
+  phone,
 }: ListItemProps) {
-  const [imageError, setImageError] = useState(false);
-  const navigate = useNavigate();
+  // Normalize img prop to always be an array for easier handling (up to 5 images)
+  const images: string[] = Array.isArray(img) ? img.slice(0, 5) : [img];
 
-  const handleClick = () => {
-    navigate(`/product/${id}`);
+  // Track which images have load errors
+  const [imageErrors, setImageErrors] = useState<boolean[]>(
+    Array(images.length).fill(false)
+  );
+
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => {
+      const updated = [...prev];
+      updated[index] = true;
+      return updated;
+    });
   };
 
   return (
-    <div
-      className="flex flex-col items-center py-4 px-8 m-auto max-w-2xs min-w-2xs max-h-96 min-h-96 border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:cursor-pointer transition-colors duration-300 ease-in-out"
-      onClick={handleClick}
-      tabIndex={0}
-      role="button"
-      aria-pressed="false"
-    >
-      <div className="w-full overflow-hidden rounded-t-lg flex items-center justify-center min-h-[140px]">
-        {!imageError ? (
-          <img
-            src={img}
-            alt={name}
-            onError={() => setImageError(true)}
-            className="object-contain max-h-36"
-          />
-        ) : (
-          <FileQuestion className="w-24 h-24 text-gray-400" />
-        )}
+    <div className="flex w-full bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer mx-auto">
+      {/* Image Section */}
+      <div className="flex justify-center w-md p-6">
+        <Carousel className="w-full max-w-xs ">
+          <CarouselContent>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CarouselItem key={index}>
+                <div className=" w-fit h-fit m-auto shadow-md hover:scale-105 transition-transform duration-300 ease-in-out">
+                  <img className="rounded-lg w-full h-full object-cover" src={
+                    imageErrors[index]
+                      ? "https://via.placeholder.com/150"
+                      : images[index]
+                  }>
+                    
+                  </img>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
-      <div className="flex flex-col items-start justify-between p-4">
-        <p className="text-md text-black-500 font-semibold">{name}</p>
-        <p className="text-md text-black-500">{price}</p>
-        <p className="text-sm text-gray-500">{condition}</p>
+
+      {/* Info Section */}
+      <div className="flex flex-col justify-between flex-1 p-6">
+        <div>
+          <p className="text-lg font-semibold text-black">{name}</p>
+          <p className="text-md text-emerald-700 font-bold">{price}</p>
+          <p className="text-sm text-gray-700 mt-2">{description}</p>
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mt-4">
+            <Badge className={`${conditionStyles[condition].bg} text-black`}>
+              <Tooltip>
+                <TooltipTrigger>{condition}</TooltipTrigger>
+                <TooltipContent>
+                  <p>{conditionStyles[condition].tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </Badge>
+          </div>
+          <div className="mt-4">
+            <span className="text-xs text-gray-500">Contato:</span>
+            <span className="text-sm text-gray-900 ml-2">{phone}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
