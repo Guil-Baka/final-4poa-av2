@@ -12,6 +12,7 @@ function App() {
         <Route path="/MeusAnuncios" element={<div>Meus Anuncios</div>} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/*" element={<div>Error 404, Not Found.</div>} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

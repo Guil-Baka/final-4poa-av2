@@ -55,7 +55,10 @@ export default function ListItem({
   phone,
 }: ListItemProps) {
   // Normalize img prop to always be an array for easier handling (up to 5 images)
-  const images: string[] = Array.isArray(img) ? img.slice(0, 5) : [img];
+  // Filter out empty strings or falsy values
+  const images: string[] = (Array.isArray(img) ? img : [img])
+    .filter(Boolean)
+    .slice(0, 5);
 
   // Track which images have load errors
   const [imageErrors, setImageErrors] = useState<boolean[]>(
@@ -71,24 +74,39 @@ export default function ListItem({
   };
 
   return (
-    <div className="flex w-full bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer mx-auto">
+    <div className="flex w-full min-h-[320px] bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer mx-auto">
       {/* Image Section */}
-      <div className="flex justify-center w-md p-6">
-        <Carousel className="w-full max-w-xs ">
+      <div className="ml-8 flex justify-center max-w-xs p-6">
+        <Carousel className="w-full max-w-xs">
           <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <CarouselItem key={index}>
-                <div className=" w-fit h-fit m-auto shadow-md hover:scale-105 transition-transform duration-300 ease-in-out">
-                  <img className="rounded-lg w-full h-full object-cover" src={
-                    imageErrors[index]
-                      ? "https://via.placeholder.com/150"
-                      : images[index]
-                  }>
-                    
-                  </img>
+            {images.length > 0 ? (
+              images.map((src, index) => (
+                <CarouselItem key={index}>
+                  <div className="w-full h-full m-auto shadow-md hover:scale-105 transition-transform duration-300 ease-in-out flex items-center justify-center">
+                    <img
+                      className="rounded-lg max-w-full max-h-full object-cover"
+                      src={
+                        imageErrors[index]
+                          ? "https://via.placeholder.com/150"
+                          : src
+                      }
+                      alt={`Imagem do produto ${name} (${index + 1})`}
+                      onError={() => handleImageError(index)}
+                    />
+                  </div>
+                </CarouselItem>
+              ))
+            ) : (
+              <CarouselItem>
+                <div className="w-fit h-fit m-auto shadow-md flex items-center justify-center">
+                  <img
+                    className="rounded-lg max-w-full max-h-full object-cover"
+                    src="https://via.placeholder.com/150"
+                    alt="Nenhuma imagem disponível"
+                  />
                 </div>
               </CarouselItem>
-            ))}
+            )}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
