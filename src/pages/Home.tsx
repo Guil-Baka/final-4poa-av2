@@ -1,6 +1,6 @@
 import HeaderNavBar from "../components/ui/HeaderNavBar";
 import LogoHeader from "../assets/imgs/logoTransparentBackgroundMini.svg";
-import CadastrarProdutoForm from "../components/ui/CadastrarProdutoForm";
+// import CadastrarProdutoForm from "../components/ui/CadastrarProdutoForm";
 import { Lightbulb, Recycle, HeartHandshake, Earth } from "lucide-react";
 // import { Button } from "@paths";
 
@@ -18,9 +18,7 @@ function Home() {
           <div>
             <HeaderNavBar />
           </div>
-          <div className="w-37 h-2">
-            {/* <CadastrarProdutoForm /> */}
-          </div>
+          <div className="w-37 h-2">{/* <CadastrarProdutoForm /> */}</div>
         </div>
         <div
           id="first-div"
@@ -31,11 +29,12 @@ function Home() {
               <p className="text-center text-lg font-normal my-auto">
                 A ideia por trás do ScrapGear vem da necessidade de muitos na
                 nossa sociedade de ter acesso a formas custo-efetivas para
-                reparo de seus dipositivos. Visando minimizar o impacto na natureza
-                tentamos conectar pessoas que possuem equipamentos já usados,
-                estajam estes funcionando ou não. Dessa forma conseguimos dar
-                nova utilidade aos equipamentos e seus componentes evitando o
-                descarte muitas vezes inadequado de eletronicos.
+                reparo de seus dipositivos. Visando minimizar o impacto na
+                natureza tentamos conectar pessoas que possuem equipamentos já
+                usados, estajam estes funcionando ou não. Dessa forma
+                conseguimos dar nova utilidade aos equipamentos e seus
+                componentes evitando o descarte muitas vezes inadequado de
+                eletronicos.
               </p>
             </div>
           </div>

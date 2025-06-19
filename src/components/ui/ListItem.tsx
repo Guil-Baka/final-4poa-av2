@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FileQuestion } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import {
@@ -22,6 +23,7 @@ interface ListItemProps {
   img: string | string[];
   description: string;
   phone: string;
+  ownerMode?: boolean; // Optional prop to indicate if the user is the owner
 }
 
 const conditionStyles: Record<
@@ -48,17 +50,26 @@ const conditionStyles: Record<
 export default function ListItem({
   id,
   name,
-  price,
   condition,
   img,
   description,
   phone,
+  price,
+  ownerMode,
 }: ListItemProps) {
+  // Default image URL (you can use any placeholder image you like)
+  const defaultImage = "https://via.placeholder.com/300x200?text=Sem+Imagem";
+
   // Normalize img prop to always be an array for easier handling (up to 5 images)
   // Filter out empty strings or falsy values
-  const images: string[] = (Array.isArray(img) ? img : [img])
+  let images: string[] = (Array.isArray(img) ? img : [img])
     .filter(Boolean)
     .slice(0, 5);
+
+  // If no images, use the default image
+  if (images.length === 0) {
+    images = [defaultImage];
+  }
 
   // Track which images have load errors
   const [imageErrors, setImageErrors] = useState<boolean[]>(
@@ -73,40 +84,49 @@ export default function ListItem({
     });
   };
 
+  // Handle click event for the delete button (if needed)
+
+  const handleDelete = () => {
+    // Call the API to delete the product by ID
+    console.log("Deleting item with ID:", id);
+    fetch(`http://localhost:8080/products/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete item");
+        }
+        // Optionally, trigger a callback or refresh the list
+        console.log("Item deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting item:", error);
+      });
+    // console.log("Delete item clicked");
+  };
+
   return (
     <div className="flex w-full min-h-[320px] bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer mx-auto">
       {/* Image Section */}
       <div className="ml-8 flex justify-center max-w-xs p-6">
         <Carousel className="w-full max-w-xs">
           <CarouselContent>
-            {images.length > 0 ? (
-              images.map((src, index) => (
-                <CarouselItem key={index}>
-                  <div className="w-full h-full m-auto shadow-md hover:scale-105 transition-transform duration-300 ease-in-out flex items-center justify-center">
-                    <img
-                      className="rounded-lg max-w-full max-h-full object-cover"
-                      src={
-                        imageErrors[index]
-                          ? "https://via.placeholder.com/150"
-                          : src
-                      }
-                      alt={`Imagem do produto ${name} (${index + 1})`}
-                      onError={() => handleImageError(index)}
-                    />
-                  </div>
-                </CarouselItem>
-              ))
-            ) : (
-              <CarouselItem>
-                <div className="w-fit h-fit m-auto shadow-md flex items-center justify-center">
+            {images.map((src, index) => (
+              <CarouselItem key={index} className="w-48 h-48 ">
+                {!imageErrors[index] ? (
                   <img
-                    className="rounded-lg max-w-full max-h-full object-cover"
-                    src="https://via.placeholder.com/150"
-                    alt="Nenhuma imagem disponível"
+                    src={src}
+                    alt={`Imagem ${index + 1}`}
+                    className="w-full h-full object-cover rounded-lg "
+                    onError={() => handleImageError(index)}
                   />
-                </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full bg-gray-200 rounded-lg">
+                    <FileQuestion className="text-gray-500" size={32} />
+                  </div>
+                )}
               </CarouselItem>
-            )}
+            ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
@@ -116,17 +136,50 @@ export default function ListItem({
       {/* Info Section */}
       <div className="flex flex-col justify-between flex-1 p-6">
         <div>
-          <p className="text-lg font-semibold text-black">{name}</p>
+          <div className="flex flex-row">
+            <p className="text-lg font-semibold text-black">{name}</p>
+            {ownerMode && (
+              <button
+                type="button"
+                className="ml-2 p-2 rounded hover:bg-red-100 transition-colors"
+                title="Excluir"
+                onClick={handleDelete}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-red-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
+
           <p className="text-md text-emerald-700 font-bold">{price}</p>
           <p className="text-sm text-gray-700 mt-2">{description}</p>
         </div>
         <div>
           <div className="flex items-center gap-2 mt-4">
-            <Badge className={`${conditionStyles[condition].bg} text-black`}>
+            <Badge
+              className={`${
+                conditionStyles[condition]?.bg ?? "bg-gray-400"
+              } text-black`}
+            >
               <Tooltip>
                 <TooltipTrigger>{condition}</TooltipTrigger>
                 <TooltipContent>
-                  <p>{conditionStyles[condition].tooltip}</p>
+                  <p>
+                    {conditionStyles[condition]?.tooltip ??
+                      "Condição desconhecida."}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </Badge>

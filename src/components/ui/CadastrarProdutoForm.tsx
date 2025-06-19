@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -20,7 +21,9 @@ export default function CadastrarProdutoForm() {
   const [email, setEmail] = useState("");
   const [categoria, setCategoria] = useState<"Doação" | "Venda">("Doação");
   const [preco, setPreco] = useState("");
-  const [condicao, setCondicao] = useState<"Quebrado" | "Funcionando" | "Funcionando Parcialmente">("Funcionando");
+  const [condicao, setCondicao] = useState<
+    "Quebrado" | "Funcionando" | "Funcionando Parcialmente"
+  >("Funcionando");
 
   const handleImagensChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
@@ -40,27 +43,55 @@ export default function CadastrarProdutoForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+    //conver email to lowercase
+    const emailLower = email.toLowerCase();
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Por favor, insira um email válido.");
+      return;
+    }
+    // Validate contato format (basic check for phone numbers)
+    const contatoRegex = /^\+?[0-9\s()-]+$/; // Basic regex for phone numbers
+    if (!contatoRegex.test(contato)) {
+      alert("Por favor, insira um contato válido (telefone ou WhatsApp).");
+      return;
+    }
+
+    // console log everything for debugging
+    console.log({
+      nome,
+      descricao,
+      contato,
+      email,
+      categoria,
+      condicao,
+      preco,
+      imagens: imagens.map((img) => img.name),
+    });
+
     const formData = new FormData();
     formData.append("nome", nome);
     formData.append("descricao", descricao);
     formData.append("contato", contato);
-    formData.append("email", email);
+    formData.append("email", emailLower); // Use the lowercase email
     formData.append("categoria", categoria);
     formData.append("condicao", condicao);
     if (categoria === "Venda") {
       formData.append("preco", preco);
     }
+
     imagens.forEach((img) => {
       formData.append("imagens", img); // Use "imagens[]" if your backend expects an array
     });
-  
+
     try {
-      const response = await fetch("YOUR_POST_URL_HERE", {
+      const response = await fetch("http://localhost:8080/products", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         alert("Erro ao enviar o produto!");
         return;
@@ -69,9 +100,20 @@ export default function CadastrarProdutoForm() {
       // Optionally, reset the form state here
       // setNome(""); setDescricao(""); setContato(""); setEmail(""); setCategoria("Doação");
       // setCondicao("Funcionando"); setPreco(""); setImagens([]);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       alert("Erro de rede ao enviar o produto!");
     }
+    // Reset form state after submission
+    setNome("");
+    setDescricao("");
+    setImagens([]);
+    setContato("");
+    setEmail("");
+    setCategoria("Doação");
+    setPreco("");
+    setCondicao("Funcionando");
+    // Optionally, close the dialog if you want
   };
 
   return (

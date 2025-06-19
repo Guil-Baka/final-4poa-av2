@@ -25,7 +25,7 @@ export default function HeaderNavBar() {
               <Link to="/Listagem">Listagem</Link>
             </NavigationMenuLink>
             <NavigationMenuLink className="w-32">
-              Meus Anuncios
+              <Link to="/MeusAnuncios">Meus Anúncios</Link>
             </NavigationMenuLink>
           </NavigationMenuContent>
         </NavigationMenuItem>

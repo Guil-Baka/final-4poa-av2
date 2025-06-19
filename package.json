@@ -3,6 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "http://localhost:8080",
+  "description": "A React application with Tailwind CSS and Radix UI components",
+  "keywords": [
+    "react",
+    "tailwindcss",
+    "radix-ui",
+    "vite",
+    "typescript"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
