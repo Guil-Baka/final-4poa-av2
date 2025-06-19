@@ -14,6 +14,7 @@ type Listing = {
   condition: Condition;
   img: string[];
   phone: string;
+  ownerMode?: boolean;
 };
 
 function ListByEmail() {
@@ -131,6 +132,7 @@ function ListByEmail() {
             condition={item.condition}
             img={item.img}
             phone={item.phone}
+            ownerMode={item.ownerMode}
           />
         ))}
         {listings.length > 0 && (
